@@ -39,5 +39,5 @@ reuse the `orbit-chat` project's venv for uvicorn.
 - `romulus-project/.env` / `.env.example` — runtime configuration.
 - `romulus-project/ngrok.yml`, `ngrok.yml` — ngrok tunnel config.
 - `cuban-zip-extracted/` — extracted static emulator PWA (`index.html`, `app.js`, `game.js`, `sw.js`, `style.css`, `DEBUG_REPORT.md`).
-- `emulation2k-v3-snapshot/` — archived Firebase Cloud Functions code.
+- `emulation2k-v3-snapshot/` — archived Firebase Cloud Functions code (`index.js`, `package.json`, `firebase.json`, `firestore.rules`, `storage.rules`, `DEPLOY.md`).
 - `ROMulus.txt` — project notes.
