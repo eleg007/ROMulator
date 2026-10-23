@@ -1,0 +1,17 @@
+ROMulus
+
+This website is called ROMulus, and is a platform for playing ROM files. It requires an access cod, had a heirarchy, etc. Here is some stuff. I want it to be styled very like emulation2k, which can be found at ~/GoogleDrive/emulation2kfrontend.
+
+ -Requires an access code tied to a device, and it becomes void and the associated user is blocked if it is attempted on another device. It also notifies the admins, and waits for further actions.
+ -Has a status heirarchy as the following: Blocked, Deleted, Pending, User, Test User, Admin, Owner
+ -Has multiple admin actions, as the following: Status, Message, Badges, Notes, Info / Stats
+ -Messages open a modal and cannot be closed for 5 seconds. It only appears once and is moerated with a simple library used in the Orbit Chat project.
+ -Players can recieve badges based on number of games played, total playtime, playing streak, etc. Admins can add or remove player badges.
+ -Information and statictics can only be edited on test users, and can be viewed in the panel.
+ -To sign up, users enter their PIN, of which entry is rate-limited, then go to the login page, where PIN holders create accounts and users can sign in. To sign in, you need a PIN and your username or email or something. To sign up, you need the PIN token generated when the user entered their PIN, their Full Name, Email, and Username.
+ -A PIN is generated in the admin panel, requiring the admin's PIN, the new PIN holder's name, then clicking continue in the modal, then the PIN can be shared. When the PIN holder creates an account, the names must match.
+ -Test users are not publicly shown, and are designed for testing.
+ -The library is a cloud feature where the client device calls Google Drive directly to download games with public URLS, not through the tunnel. Keep a JSON file as a manifest. Users can upload games, upvote them, and save their favorites. Admins can manage the library.
+ -The website is hoste on ngrok with this authtoken: 3JCeAJGYWFhUK9Xv2s9bMtMKOmV_388BBZN62zzdQ295cnLy3
+
+Ask me for anything else you need to know. I have some designs in mind

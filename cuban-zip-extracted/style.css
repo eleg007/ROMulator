@@ -1,0 +1,84 @@
+body {
+    font-family: 'Georgia', 'serif';
+    background-color: #f5f5dc; /* Beige */
+    color: #333;
+    margin: 0;
+    padding: 0;
+}
+
+header {
+    background-color: #8B4513; /* SaddleBrown */
+    color: #fff;
+    padding: 1rem;
+    text-align: center;
+}
+
+header h1 {
+    margin: 0;
+    font-family: 'Helvetica', 'Arial', 'sans-serif';
+    font-size: 2.5rem;
+    font-weight: bold;
+}
+
+.search-container {
+    margin-top: 1rem;
+}
+
+#searchBar {
+    width: 60%;
+    padding: 0.5rem;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 1rem;
+}
+
+main {
+    padding: 1rem;
+}
+
+article {
+    background-color: #fff;
+    border-left: 5px solid #800000; /* Maroon */
+    margin-bottom: 1rem;
+    padding: 1rem;
+}
+
+article h2 {
+    color: #800000; /* Maroon */
+}
+
+#unblocker {
+    text-align: center;
+}
+
+.unblocker-container {
+    margin-bottom: 1rem;
+}
+
+#urlInput {
+    width: 70%;
+    padding: 0.5rem;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 1rem;
+}
+
+#goButton {
+    padding: 0.5rem 1rem;
+    background-color: #800000; /* Maroon */
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 1rem;
+}
+
+#proxyFrame {
+    width: 100%;
+    height: 80vh;
+    border: 1px solid #ccc;
+}
+
+.hidden {
+    display: none;
+}

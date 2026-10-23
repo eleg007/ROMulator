@@ -1,0 +1,7 @@
+fastapi>=0.115,<1
+uvicorn>=0.34,<1
+python-dotenv>=1,<2
+argon2-cffi>=23,<26
+python-multipart>=0.0.9,<1
+google-api-python-client>=2.150,<3
+google-auth>=2.35,<3

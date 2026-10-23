@@ -1,0 +1,15 @@
+[Unit]
+Description=ROMulus FastAPI backend
+After=network.target
+
+[Service]
+Type=simple
+User=debian
+WorkingDirectory=/home/debian/projects/romulus
+EnvironmentFile=/home/debian/projects/romulus/.env
+ExecStart=/home/debian/projects/orbit-chat/.venv/bin/uvicorn backend.main:app --host 127.0.0.1 --port 8010 --proxy-headers --forwarded-allow-ips=127.0.0.1
+Restart=always
+RestartSec=5
+
+[Install]
+WantedBy=multi-user.target

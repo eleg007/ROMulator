@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ROMulus — ROM & Flash Emulator</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Space+Mono:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/static/style.css" />
+  <script src="https://cdn.jsdelivr.net/gh/EmulatorJS/EmulatorJS@latest/data/loader.js"></script>
+  <script src="https://unpkg.com/@ruffle-rs/ruffle"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/dompurify/3.1.6/purify.min.js"></script>
+</head>
+<body>
+  <section id="view-auth" class="view active auth-wrap">
+    <div class="auth-logo">ROM<span>ulus</span></div>
+    <div class="auth-tagline">ROM & Shockwave Emulator</div>
+    <div class="auth-card">
+      <div class="auth-tabs">
+        <button class="auth-tab active" id="tabLogin">Sign In</button>
+        <button class="auth-tab" id="tabSignup">Register</button>
+      </div>
+      <div class="auth-body">
+        <div id="auth-login">
+          <div id="loginError" class="auth-error"></div>
+          <div class="field"><span class="lbl">Username or email</span><input id="loginUsername" class="inp" /></div>
+          <div class="field"><span class="lbl">Password</span><input id="loginPassword" type="password" class="inp" /></div>
+          <button id="loginBtn" class="btn btn-primary" style="width:100%">Sign in</button>
+        </div>
+        <div id="auth-signup" class="hidden">
+          <div id="signupError" class="auth-error"></div>
+          <div class="field"><span class="lbl">PIN</span><input id="signupPin" class="inp" placeholder="6-digit access code" /></div>
+          <div class="field"><span class="lbl">Full name (must match PIN holder)</span><input id="signupName" class="inp" /></div>
+          <div class="field"><span class="lbl">Email</span><input id="signupEmail" type="email" class="inp" /></div>
+          <div class="field"><span class="lbl">Username</span><input id="signupUsername" class="inp" /></div>
+          <div class="field"><span class="lbl">Password</span><input id="signupPassword" type="password" class="inp" /></div>
+          <button id="signupBtn" class="btn btn-primary" style="width:100%">Create account</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="view-pending" class="view status-wrap">
+    <div class="st-title">Pending Review</div>
+    <div class="st-body">Your account is awaiting approval. An administrator must approve it before you can play.</div>
+    <button id="pendingLogout" class="btn btn-ghost">Sign out</button>
+  </section>
+
+  <section id="view-blocked" class="view status-wrap">
+    <div class="st-title">Access Denied</div>
+    <div class="st-body">This account or device is blocked, deleted, or denied access. Contact an administrator.</div>
+    <button id="blockedLogout" class="btn btn-ghost">Sign out</button>
+  </section>
+
+  <section id="view-app" class="view" style="flex-direction:column;height:100vh;display:none;">
+    <header class="app-header">
+      <button id="sidebarToggle" class="btn btn-ghost btn-sm">☰</button>
+      <div class="logo">ROM<span>ulus</span></div>
+      <div class="header-right">
+        <button id="uploadIconBtn" class="btn btn-ghost btn-sm" title="Upload">⬆</button>
+        <div class="user-chip" id="userChip"></div>
+        <button id="openAdminBtn" class="btn btn-ghost btn-sm hidden">🛡 Admin</button>
+        <button id="appLogout" class="btn btn-ghost btn-sm">Sign out</button>
+      </div>
+    </header>
+    <div class="app-body">
+      <aside id="sidebar">
+        <div class="sidebar-panel">
+          <button id="badgesOpenBtn" class="btn btn-ghost btn-sm" style="width:100%;margin-bottom:8px;">🏅 <span class="nav-text">Badges</span></button>
+          <div class="section-lbl nav-text">Library</div>
+          <div id="libraryList" class="game-list"></div>
+          <div>
+            <div class="section-lbl nav-text">Badges</div>
+            <div id="badgesList" style="font-size:.62rem;color:var(--muted);"></div>
+          </div>
+        </div>
+      </aside>
+      <main>
+        <div class="player-wrap">
+          <div style="display:flex;align-items:center;justify-content:space-between;gap:8px;">
+            <div>
+              <span class="np-lbl">Now Playing</span>
+              <div class="now-playing" id="nowPlaying">Select a game</div>
+            </div>
+            <button id="voteBtn" class="btn btn-ghost btn-sm">👍 Upvote</button>
+          </div>
+          <div id="playerContainer">
+            <div class="emulator-wrap" id="emulatorWrap"></div>
+          </div>
+        </div>
+      </main>
+    </div>
+  </section>
+
+  <section id="view-admin" class="view" style="flex-direction:column;height:100vh;display:none;">
+    <header class="app-header">
+      <div style="display:flex;align-items:center;gap:12px;">
+        <div class="logo">Admin</div>
+        <button id="adminBackBtn" class="btn btn-ghost btn-sm">← App</button>
+      </div>
+      <div class="header-right">
+        <div class="user-chip" id="adminUserChip"></div>
+        <button id="genCodeOpenBtn" class="btn btn-primary btn-sm">Generate code</button>
+      </div>
+    </header>
+    <div class="admin-body">
+      <div class="filter-bar" style="margin-bottom:12px;">
+        <button class="filter-btn active" data-filter="all">All</button>
+        <button class="filter-btn" data-filter="User">User</button>
+        <button class="filter-btn" data-filter="Pending">Pending</button>
+        <button class="filter-btn" data-filter="Admin">Admin</button>
+      </div>
+      <div class="tbl-wrap">
+        <table>
+          <thead><tr><th>User</th><th>Status</th><th>Actions</th></tr></thead>
+          <tbody id="adminUsers"></tbody>
+        </table>
+      </div>
+      <div class="section-lbl" style="margin-top:18px;">Notifications</div>
+      <div id="adminNotifications" style="font-size:.62rem;color:var(--muted);"></div>
+    </div>
+  </section>
+
+  <div class="modal-backdrop" id="msgModal">
+    <div class="modal-box">
+      <div class="modal-title">Message from Admin</div>
+      <div class="modal-sub">This window will close in <span id="msgCountdown">5</span> seconds.</div>
+      <div id="msgContent" style="font-size:.72rem;line-height:1.7;white-space:pre-wrap;"></div>
+    </div>
+  </div>
+
+  <div class="modal-backdrop" id="adminUserModal">
+    <div class="modal-box">
+      <div class="modal-title" id="adminModalTitle">Edit User</div>
+      <div class="modal-sub" id="adminModalSub"></div>
+      <div class="modal-form">
+        <div class="field">
+          <span class="lbl">Status</span>
+          <select id="adminStatusSelect" class="inp">
+            <option>Blocked</option><option>Deleted</option><option>Pending</option><option>User</option><option>Test User</option><option>Admin</option><option>Owner</option>
+          </select>
+        </div>
+        <div class="field"><span class="lbl">Message</span><textarea id="adminMsgText" class="inp"></textarea></div>
+        <div class="field"><span class="lbl">Add badge</span><input id="adminBadgeText" class="inp" placeholder="Badge name" /></div>
+      </div>
+      <div class="modal-actions">
+        <button id="adminSaveStatus" class="btn btn-primary btn-sm">Save status</button>
+        <button id="adminSendMsg" class="btn btn-ghost btn-sm">Send message</button>
+        <button id="adminAddBadge" class="btn btn-success btn-sm">Add badge</button>
+        <button id="adminCloseModal" class="btn btn-ghost btn-sm">Close</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal-backdrop" id="codeModal">
+    <div class="modal-box">
+      <div class="modal-title">Generate Access Code</div>
+      <div class="modal-sub">Create a new 6-digit code for a PIN holder.</div>
+      <div class="modal-form">
+        <div class="field"><span class="lbl">Holder name</span><input id="codeName" class="inp" placeholder="New holder name" /></div>
+      </div>
+      <div id="codeResult" style="margin-top:12px;font-size:.7rem;color:var(--green);"></div>
+      <div class="modal-actions">
+        <button id="genCodeBtn" class="btn btn-primary btn-sm">Generate</button>
+        <button id="codeCloseBtn" class="btn btn-ghost btn-sm">Close</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal-backdrop" id="uploadModal">
+    <div class="modal-box">
+      <div class="modal-title">Upload Game</div>
+      <div class="modal-sub">Upload a ROM or Shockwave Flash file to your library.</div>
+      <div class="modal-form">
+        <div class="field"><span class="lbl">Title</span><input id="uploadTitle" class="inp" /></div>
+        <div class="field"><span class="lbl">System</span>
+          <select id="uploadSystem" class="inp">
+            <option value="NES">NES</option>
+            <option value="SWF">Shockwave Flash</option>
+          </select>
+        </div>
+        <div class="field"><span class="lbl">File</span><input id="uploadFile" type="file" class="inp" /></div>
+      </div>
+      <div class="modal-actions">
+        <button id="uploadBtn" class="btn btn-primary btn-sm">Upload</button>
+        <button id="uploadCloseBtn" class="btn btn-ghost btn-sm">Close</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal-backdrop" id="badgesModal">
+    <div class="modal-box">
+      <div class="modal-title">Badges</div>
+      <div class="modal-sub">Your earned badges.</div>
+      <div id="badgesModalList" style="display:flex;flex-wrap:wrap;gap:6px;font-size:.62rem;"></div>
+      <div class="modal-actions"><button id="badgesCloseBtn" class="btn btn-ghost btn-sm">Close</button></div>
+    </div>
+  </div>
+
+  <script src="/static/app.js" type="module"></script>
+</body>
+</html>

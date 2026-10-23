@@ -1,0 +1,14 @@
+[Unit]
+Description=ROMulus ngrok tunnel
+After=network.target romulus-backend.service
+Wants=romulus-backend.service
+
+[Service]
+Type=simple
+User=debian
+ExecStart=/usr/local/bin/ngrok http 8010 --config=/home/debian/projects/romulus/ngrok.yml
+Restart=always
+RestartSec=5
+
+[Install]
+WantedBy=multi-user.target
